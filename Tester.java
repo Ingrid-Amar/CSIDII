@@ -1,49 +1,61 @@
-public class War {
-    private static int playerCards;
-    private static int cpuCards;
+public class CustomStrinsssssg {
 
-    public static void main(String[] args) {
-        double Player1 = 26;
-        double Player2 = 26;
-        double counter = 0;
-        while ((Player1 > 0) && (Player2 > 0)) {
-            double r1 = Math.random() * 12 + 1;
-            double r2 = Math.random() * 12 + 1;
-            if ((r1 == r2) && ((Player1 > 3) && (Player2 > 3))) {
-                double r3 = Math.random() * 12 + 1;
-                double r4 = Math.random() * 12 + 1;
-                double r5 = Math.random() * 12 + 1;
-                double total1 = r3 + r4 + r5;
-                double r6 = Math.random() * 12 + 1;
-                double r7 = Math.random() * 12 + 1;
-                double r8 = Math.random() * 12 + 1;
-                double total2 = r6 + r7 + r8;
-                if (total1 > total2) {
-                    Player1 += 3;
-                    Player2 -= 3;
-                } else {
-                    Player2 += 3;
-                    Player1 -= 3;
-                }
-            } else if (r1 > r2) {
-                Player1 += 1;
-                Player2 -= 1;
-            } else if (r2 > r1) {
-                Player1 -= 1;
-                Player2 += 1;
-            } else if ((r1 == r2) && ((Player1 < 3) || (Player2 < 3))) {
-                break;
-            }
-            counter += 1;
+    // instance variables (declare here).
+    private char[] value;
 
+    // Default constructor.
+    public CustomString() {
+    }
+
+    // Constructor with arguments.
+    public CustomString(char[] value) {
+        this.value = value;
+    }
+
+    // Constructor with arguments.
+    public CustomString(String value) {
+        this.value = new char[value.length()];
+        for (int i = 0; i < this.value.length; i++) {
+            this.value[i] = value.charAt(i);
         }
-        if (Player1 > Player2) {
-            System.out.println("You Won!!!!");
-            System.out.println("Games Played: " + counter);
-        } else if (Player1 < Player2) {
-            System.out.println("You Lost");
-            System.out.println("Games Played: " + counter);
+    }
+
+    // Instance method.
+    public int length() {
+        return this.value.length;
+    }
+
+    // Instance method.
+    public char randomChar() {
+        int randomIndex = this.randomNumber(); // calling a private method within our class.
+        return this.value[randomIndex];
+    }
+
+    // Instance method.
+    public char charAt(int i) {
+        return this.value[i];
+    }
+
+    public CustomString substring(int i, int j) {
+
+        char[] substring = new char[j - i];
+        for (int start = i; start < j; start++) {
+            substring[start - i] = this.value[start];
         }
 
+        return new CustomString(substring);
+    }
+
+    // Private instance method (used internally to the class).
+    private int randomNumber() {
+        return (int) (Math.random() * this.value.length);
+    }
+
+    public String toString() {
+        String returnString = "";
+        for (int i = 0; i < this.value.length; i++) {
+            returnString += this.value[i];
+        }
+        return returnString;
     }
 }

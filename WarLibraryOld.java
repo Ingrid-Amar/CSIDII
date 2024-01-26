@@ -1,20 +1,8 @@
-/*
- * Author: Ingrid Bailey
- * Co-Author: Kyle Krstulich
- * 
- * 10/30/23
- * WarLibrary.java
- * 
- * Bunch of funcitons to play the card game war from the command-line.
- */
-
 public class WarLibrary {
     private static String[] suits = { "hearts", "diamonds", "spades", "clubs" };
     private static String[] cardValues = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king",
             "ace" };
     public static String[][] cardDeck = new String[52][2];
-    final private static String NULL_VALUE = "*";
-    final private static String[] EMPTY_CARD = { NULL_VALUE, NULL_VALUE };
 
     // makes the unshuffled deck
     /*
@@ -35,7 +23,8 @@ public class WarLibrary {
         String[][] deck = new String[52][];
 
         for (int k = 0; k < 52; k++) {
-            deck[k] = EMPTY_CARD;
+            String[] card = { " ", " " };
+            deck[k] = card;
         }
 
         return deck;
@@ -43,14 +32,12 @@ public class WarLibrary {
 
     public static String[][] CreateDeck() {
         String[][] deck = new String[52][2];
-        int deckIndex;
         for (int i = 0; i < suits.length; i++) {
             String suit = suits[i];
             for (int j = 0; j < cardValues.length; j++) {
                 String cardValue = cardValues[j];
                 String[] card = { cardValue, suit };
-                deckIndex = ((j * suits.length) + i);
-                deck[deckIndex] = card;
+                deck[(i + 1) * (j + 1) - 1] = card;
             }
         }
 
@@ -61,7 +48,7 @@ public class WarLibrary {
     public static int GetLength(String[][] deck) {
         int size = 0;
         for (int i = 0; i < 52; i++) {
-            if (deck[i][0] != NULL_VALUE)
+            if (deck[i][0] != " ")
                 size++;
 
         }
@@ -86,8 +73,10 @@ public class WarLibrary {
     // takes out the last NON null value from top of array
     public static String[] PullCard(String[][] Deck) {
         int index = GetLength(Deck) - 1;
+        String[] emptyCard = { " ", " " };
         String[] card = Deck[index];
-        Deck[index] = EMPTY_CARD;
+        Deck[index] = emptyCard;
+        System.out.println("Pull_Card: " + card[0] + ", " + card[1]);
         return card;
     }
 
@@ -136,10 +125,10 @@ public class WarLibrary {
         return cardDecoder;
     }
 
-    // Decodes the string cards into integers, compares them, if playercard wins
-    // throw true else throw false
     public static boolean CompareCard(String[] playercard, String[] cpucard) {
         boolean result = true;
+        System.out.println("Player card " + playercard[0] + ", " + playercard[1]);
+        System.out.println("cpu card " + cpucard[0] + ", " + cpucard[1]);
         int[] playerconvert = Decode(playercard);
         int[] cpuconvert = Decode(cpucard);
 
@@ -156,18 +145,16 @@ public class WarLibrary {
         return result;
     }
 
-    // From the master static deck, deal cards to both decks.
     public static void DealDeck(String[][] playerDeck, String[][] cpuDeck) {
         for (int k = 0; k < 52; k++) {
             if (k < 26) {
                 playerDeck[k] = cardDeck[k];
             } else {
-                cpuDeck[k - 26] = cardDeck[k];
+                cpuDeck[k - 25] = cardDeck[k];
             }
         }
     }
 
-    // Throws false for empty deck
     public static boolean Lose(String[][] playerDeck) {
         boolean result = false;
         if (GetLength(playerDeck) == 0) {
@@ -176,4 +163,52 @@ public class WarLibrary {
         return result;
     }
 
+    public static void TestFuction() {
+        String[][] playerDeck = CreateEmptyDeck();
+        String[][] cpuDeck = CreateEmptyDeck();
+
+        boolean playersturn = true;
+        int playerwins = 0;
+        int cpuwins = 0;
+        DealDeck(playerDeck, cpuDeck);
+        String[] playercard = PullCard(playerDeck);
+        String[] cpucard = PullCard(cpuDeck);
+        System.out.println(playerDeck[0][0]);
+        while (true) {
+            if (Lose(playerDeck) || Lose(cpuDeck))
+                break;
+            if (playersturn) {
+                playercard = PullCard(playerDeck);
+                cpucard = PullCard(cpuDeck);
+            } else {
+                cpucard = PullCard(cpuDeck);
+                playercard = PullCard(playerDeck);
+            }
+            if (CompareCard(playercard, cpucard)) {
+                AddCard(playerDeck, cpucard);
+                AddCard(playerDeck, playercard);
+                playersturn = true;
+                playerwins += 1;
+            } else {
+                AddCard(cpuDeck, cpucard);
+                AddCard(cpuDeck, playercard);
+                playersturn = false;
+                cpuwins += 1;
+            }
+            System.out.println("cpu length: " + GetLength(cpuDeck));
+            System.out.println("Player length: " + GetLength(playerDeck));
+            System.out.println("Player wins: " + playerwins);
+            System.out.println("cpuwins: " + cpuwins);
+        }
+        System.out.println("Player wins: " + playerwins);
+        System.out.println("cpuwins: " + cpuwins);
+        System.out.println("cpudeck size: " + GetLength(cpuDeck));
+        System.out.println("playerdeck size: " + GetLength(playerDeck));
+
+    }
+
+    public static void main(String[] args) {
+        TestFuction();
+
+    }
 }
